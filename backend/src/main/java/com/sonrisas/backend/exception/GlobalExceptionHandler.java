@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -49,4 +52,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 ErrorResponse.of(500, "Error interno", "Ocurrió un error inesperado"));
     }
+
+    @ExceptionHandler(ReglaNegocioException.class)
+    public ResponseEntity<ErrorResponse> reglaNegocio(ReglaNegocioException ex) {
+        return ResponseEntity.status(422).body(
+                ErrorResponse.of(422, "No se pudo procesar", ex.getMessage()));
+    }
+
+    @ExceptionHandler(RecursoNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> noEncontrado(RecursoNoEncontradoException ex) {
+        return ResponseEntity.status(404).body(
+                ErrorResponse.of(404, "No encontrado", ex.getMessage()));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> jsonInvalido(HttpMessageNotReadableException ex) {
+        return ResponseEntity.badRequest().body(
+                ErrorResponse.of(400, "Solicitud inválida", "El cuerpo de la petición no es un JSON válido"));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> rutaNoExiste(NoResourceFoundException ex) {
+        return ResponseEntity.status(404).body(
+                ErrorResponse.of(404, "No encontrado", "El recurso solicitado no existe"));
+    }
+
 }

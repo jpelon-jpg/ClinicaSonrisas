@@ -1,5 +1,6 @@
 package com.sonrisas.backend.security;
 
+import com.sonrisas.backend.repository.TokenRevocadoRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +18,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UsuarioDetailsService detailsService;
+    private final TokenRevocadoRepository revocadoRepository;
 
-    public JwtAuthFilter(JwtService jwtService, UsuarioDetailsService detailsService) {
+    public JwtAuthFilter(JwtService jwtService,
+                         UsuarioDetailsService detailsService,
+                         TokenRevocadoRepository revocadoRepository) {
         this.jwtService = jwtService;
         this.detailsService = detailsService;
+        this.revocadoRepository = revocadoRepository;
     }
 
     @Override
@@ -32,6 +37,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             if (jwtService.esValido(token)
+                    && !revocadoRepository.existsByTokenHash(jwtService.hash(token))
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails ud = detailsService.loadUserByUsername(jwtService.extraerCorreo(token));
                 if (ud.isEnabled()) {

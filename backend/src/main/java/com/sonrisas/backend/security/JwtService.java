@@ -11,6 +11,11 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import java.security.MessageDigest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.HexFormat;
+
 @Service
 public class JwtService {
 
@@ -51,4 +56,20 @@ public class JwtService {
         return Jwts.parser().verifyWith(key).build()
                 .parseSignedClaims(token).getPayload();
     }
+
+    public LocalDateTime extraerExpiracion(String token) {
+        return claims(token).getExpiration().toInstant()
+                .atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    public String hash(String token) {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                    .digest(token.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(digest);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 }
