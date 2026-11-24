@@ -1,6 +1,8 @@
 package com.sonrisas.backend.exception;
 
 import com.sonrisas.backend.dto.ErrorResponse;
+
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -75,6 +78,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> rutaNoExiste(NoResourceFoundException ex) {
         return ResponseEntity.status(404).body(
                 ErrorResponse.of(404, "No encontrado", "El recurso solicitado no existe"));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> integridad(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(422).body(ErrorResponse.of(422, "No se pudo procesar",
+                "La operación no es posible: el registro tiene datos asociados o un valor duplicado. "
+                + "Si es un usuario con historial, desactívalo en lugar de eliminarlo."));
     }
 
 }
