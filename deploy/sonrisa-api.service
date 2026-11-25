@@ -1,0 +1,19 @@
+# /etc/systemd/system/sonrisa-api.service
+[Unit]
+Description=Sonrisa API (Spring Boot)
+After=network.target mysql.service
+Requires=mysql.service
+
+[Service]
+User=sonrisa
+Group=sonrisa
+WorkingDirectory=/opt/sonrisa
+# application.properties vive junto al JAR (fuera del repositorio) con permisos 600
+ExecStart=/usr/bin/java -Xms256m -Xmx512m -jar /opt/sonrisa/sonrisa-api.jar --spring.config.additional-location=file:/opt/sonrisa/application.properties
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=10
+Environment=TZ=America/Mexico_City
+
+[Install]
+WantedBy=multi-user.target
