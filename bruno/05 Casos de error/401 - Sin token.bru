@@ -1,0 +1,17 @@
+meta {
+  name: 401 - Sin token
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/citas
+  body: none
+  auth: none
+}
+
+tests {
+  test("sin header Authorization responde 401", function () {
+    expect(res.status).to.equal(401);
+  });
+}

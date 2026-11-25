@@ -1,0 +1,40 @@
+meta {
+  name: Listar citas paginadas y filtradas
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/citas?estado=CONFIRMADA&page=0&size=5&sort=fechaHora,asc
+  body: none
+  auth: bearer
+}
+
+params:query {
+  estado: CONFIRMADA
+  page: 0
+  size: 5
+  sort: fechaHora,asc
+}
+
+auth:bearer {
+  token: {{tokenRecep}}
+}
+
+script:post-response {
+  if (res.body.content && res.body.content.length) {
+    bru.setVar("citaId", res.body.content[0].id);
+  }
+}
+
+tests {
+  test("paginación del lado del servidor", function () {
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.keys("content", "page", "size", "totalElements", "totalPages");
+    expect(res.body.size).to.equal(5);
+    expect(res.body.content.length).to.be.at.most(5);
+  });
+  test("el filtro de estado se aplicó en el servidor", function () {
+    res.body.content.forEach(c => expect(c.estado).to.equal("CONFIRMADA"));
+  });
+}

@@ -1,0 +1,21 @@
+meta {
+  name: 422 - Confirmar cita ya confirmada
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/citas/{{solicitudId}}/confirmar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenRecep}}
+}
+
+tests {
+  test("regla de negocio violada responde 422", function () {
+    expect(res.status).to.equal(422);
+  });
+}

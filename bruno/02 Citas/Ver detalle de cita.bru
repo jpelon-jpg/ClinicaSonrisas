@@ -1,0 +1,24 @@
+meta {
+  name: Ver detalle de cita
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/citas/{{citaId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenRecep}}
+}
+
+tests {
+  test("devuelve DTO con paciente, dentista y tratamientos", function () {
+    expect(res.status).to.equal(200);
+    expect(res.body.paciente).to.have.property("nombreCompleto");
+    expect(res.body.dentista).to.have.property("consultorio");
+    expect(res.body.tratamientos).to.be.an("array");
+  });
+}

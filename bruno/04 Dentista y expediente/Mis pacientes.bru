@@ -1,0 +1,25 @@
+meta {
+  name: Mis pacientes
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/dentista/pacientes?page=0&size=5
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDentista}}
+}
+
+script:post-response {
+  if (res.body.content && res.body.content.length) bru.setVar("pacienteDentista", res.body.content[0].id);
+}
+
+tests {
+  test("solo pacientes con citas con este dentista", function () {
+    expect(res.status).to.equal(200);
+  });
+}

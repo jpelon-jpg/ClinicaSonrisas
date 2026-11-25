@@ -1,0 +1,40 @@
+meta {
+  name: Paciente solicita cita en linea
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/paciente/citas
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenPaciente}}
+}
+
+script:pre-request {
+  // próximo día hábil a las 16:00
+  const d = new Date();
+  d.setDate(d.getDate() + 3);
+  if (d.getDay() === 0) d.setDate(d.getDate() + 1);
+  const f = d.toISOString().slice(0, 10);
+  req.setBody({ dentistaId: 2, fechaHora: f + "T16:00:00", tratamientoIds: [1], motivo: "Solicitud desde Bruno" });
+}
+
+script:post-response {
+  if (res.status === 201) bru.setVar("solicitudId", res.body.id);
+}
+
+body:json {
+  {}
+}
+
+tests {
+  test("la solicitud queda PENDIENTE y con origen EN_LINEA", function () {
+    expect(res.status).to.equal(201);
+    expect(res.body.estado).to.equal("PENDIENTE");
+    expect(res.body.origen).to.equal("EN_LINEA");
+  });
+}

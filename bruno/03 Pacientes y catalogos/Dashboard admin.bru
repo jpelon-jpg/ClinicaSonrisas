@@ -1,0 +1,22 @@
+meta {
+  name: Dashboard admin
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/dashboard/admin
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+tests {
+  test("indicadores del mes", function () {
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.property("citasPorDentista");
+  });
+}

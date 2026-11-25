@@ -1,0 +1,30 @@
+meta {
+  name: 400 - Datos invalidos al registrar
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "",
+    "apellidos": "Prueba",
+    "email": "no-es-correo",
+    "telefono": "123",
+    "password": "debil"
+  }
+}
+
+tests {
+  test("Bean Validation responde 400 con errores por campo", function () {
+    expect(res.status).to.equal(400);
+    expect(res.body.fieldErrors).to.have.property("email");
+    expect(res.body.fieldErrors).to.have.property("password");
+    expect(res.body.fieldErrors).to.have.property("nombre");
+  });
+}

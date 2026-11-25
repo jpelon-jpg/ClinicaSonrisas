@@ -1,0 +1,21 @@
+meta {
+  name: 403 - Paciente intenta ver usuarios
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/usuarios
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenPaciente}}
+}
+
+tests {
+  test("un PACIENTE no puede entrar a /usuarios (solo ADMIN)", function () {
+    expect(res.status).to.equal(403);
+  });
+}

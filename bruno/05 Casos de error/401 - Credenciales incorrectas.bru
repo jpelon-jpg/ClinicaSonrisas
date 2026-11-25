@@ -1,0 +1,25 @@
+meta {
+  name: 401 - Credenciales incorrectas
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "admin@sonrisa.com",
+    "password": "Incorrecta#1"
+  }
+}
+
+tests {
+  test("401 con mensaje JSON", function () {
+    expect(res.status).to.equal(401);
+    expect(res.body.message).to.be.a("string");
+  });
+}

@@ -1,0 +1,38 @@
+meta {
+  name: Login dentista
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{dentistaEmail}}",
+    "password": "{{dentistaPassword}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("tokenDentista", res.body.token);
+  }
+}
+
+tests {
+  test("responde 200 con un JWT", function () {
+    expect(res.status).to.equal(200);
+    expect(res.body.tipo).to.equal("Bearer");
+    expect(res.body.token.split(".")).to.have.lengthOf(3);
+  });
+  test("el usuario tiene el rol DENTISTA", function () {
+    expect(res.body.usuario.roles).to.include("DENTISTA");
+  });
+  test("la respuesta no expone la contraseña", function () {
+    expect(JSON.stringify(res.body)).to.not.include("password");
+  });
+}

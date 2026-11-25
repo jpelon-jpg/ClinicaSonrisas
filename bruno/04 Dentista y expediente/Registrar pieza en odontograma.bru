@@ -1,0 +1,30 @@
+meta {
+  name: Registrar pieza en odontograma
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/expedientes/{{pacienteDentista}}/odontograma
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenDentista}}
+}
+
+body:json {
+  {
+    "pieza": 36,
+    "estado": "RESINA",
+    "observacion": "Resina oclusal (registro desde Bruno)"
+  }
+}
+
+tests {
+  test("registro agregado al historial", function () {
+    expect(res.status).to.equal(201);
+    expect(res.body.pieza).to.equal(36);
+  });
+}

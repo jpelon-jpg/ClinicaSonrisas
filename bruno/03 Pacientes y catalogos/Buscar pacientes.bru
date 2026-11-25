@@ -1,0 +1,28 @@
+meta {
+  name: Buscar pacientes
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/pacientes?q=hern&page=0&size=10
+  body: none
+  auth: bearer
+}
+
+params:query {
+  q: hern
+  page: 0
+  size: 10
+}
+
+auth:bearer {
+  token: {{tokenRecep}}
+}
+
+tests {
+  test("filtro de texto resuelto en el servidor", function () {
+    expect(res.status).to.equal(200);
+    expect(res.body.totalElements).to.be.at.least(1);
+  });
+}

@@ -1,0 +1,23 @@
+meta {
+  name: 404 - Cita inexistente
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/citas/999999
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenRecep}}
+}
+
+tests {
+  test("404 con cuerpo JSON uniforme", function () {
+    expect(res.status).to.equal(404);
+    expect(res.body).to.include.keys("timestamp", "status", "error", "message", "path");
+    expect(res.body.status).to.equal(404);
+  });
+}
