@@ -1,0 +1,22 @@
+# MySQL 8 listo para desarrollo, por si no quieres instalar MySQL en tu computadora.
+#   docker compose up -d        (levanta la base de datos)
+#   docker compose down         (la detiene; los datos se conservan en el volumen)
+# En application.properties usa:  usuario sonrisa_app  /  contraseña sonrisa_local
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sonrisa-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_local
+      MYSQL_DATABASE: sonrisa_db
+      MYSQL_USER: sonrisa_app
+      MYSQL_PASSWORD: sonrisa_local
+      TZ: America/Mexico_City
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - sonrisa-datos:/var/lib/mysql
+volumes:
+  sonrisa-datos:

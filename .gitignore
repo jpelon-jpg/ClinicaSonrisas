@@ -1,0 +1,30 @@
+# ---- Secretos: NUNCA subir ----
+backend/src/main/resources/application.properties
+backend/src/main/resources/application.yml
+*.env
+.env*
+!.env.example
+
+# ---- Backend ----
+backend/target/
+*.class
+*.log
+hs_err_pid*
+
+# ---- Frontend ----
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ---- Respaldos con datos reales ----
+database/*.local.sql
+
+# ---- IDEs / SO ----
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Maven wrapper
+backend/.mvn/wrapper/maven-wrapper.jar
