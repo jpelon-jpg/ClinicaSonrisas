@@ -87,12 +87,24 @@ public class CanalesSender {
     }
 
     private void enviarTwilio(CanalNotificacion canal, String to, String from, String asunto, String texto,
-                              Long usuarioId, Long citaId) {
+                            Long usuarioId, Long citaId) {
         try {
             MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
             form.add("To", to);
             form.add("From", from);
-            form.add("Body", texto);
+
+            // Cuenta de prueba de Twilio: el SMS solo admite una plantilla predefinida y el WhatsApp un ContentSid.
+            // Con una cuenta mejorada se dejan vacías estas propiedades y se envía el texto propio.
+            String plantillaSms = props.twilio().smsTemplate();
+            String contentSid = props.twilio().whatsappContentSid();
+            if (canal == CanalNotificacion.SMS && plantillaSms != null && !plantillaSms.isBlank()) {
+                form.add("Body", plantillaSms);
+            } else if (canal == CanalNotificacion.WHATSAPP && contentSid != null && !contentSid.isBlank()) {
+                form.add("ContentSid", contentSid);
+            } else {
+                form.add("Body", texto);
+            }
+
             twilio.post()
                     .uri("/Accounts/{sid}/Messages.json", props.twilio().accountSid())
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)

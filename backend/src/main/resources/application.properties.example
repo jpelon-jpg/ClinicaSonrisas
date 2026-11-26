@@ -44,9 +44,11 @@ app.mail.from=Sonrisa Clínica Dental <no-responder@TU-DOMINIO>
 app.notificaciones.email.enabled=false
 
 # ---------- Twilio (SMS y WhatsApp) ----------
-app.twilio.account-sid=CAMBIAR_ACCOUNT_SID
-app.twilio.auth-token=CAMBIAR_AUTH_TOKEN
-app.twilio.sms-from=+1XXXXXXXXXX
-app.twilio.whatsapp-from=whatsapp:+14155238886
-app.notificaciones.sms.enabled=false
+app.twilio.account-sid=
+app.twilio.auth-token=
+app.twilio.sms-from=
+app.twilio.sms-template=
+app.twilio.whatsapp-from=
+app.twilio.whatsapp-content-sid=
+app.notificaciones.sms.enabled=true
 app.notificaciones.whatsapp.enabled=false

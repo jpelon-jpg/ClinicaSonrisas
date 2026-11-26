@@ -32,7 +32,8 @@ public record AppProperties(
         }
     }
 
-    public record Twilio(String accountSid, String authToken, String smsFrom, String whatsappFrom) {
+    public record Twilio(String accountSid, String authToken, String smsFrom, String smsTemplate,
+                     String whatsappFrom, String whatsappContentSid) {
     }
 
     public record Notificaciones(Canal email, Canal sms, Canal whatsapp) {
