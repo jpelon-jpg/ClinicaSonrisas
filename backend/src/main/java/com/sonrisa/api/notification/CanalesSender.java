@@ -28,12 +28,15 @@ public class CanalesSender {
     private final JavaMailSender mailSender;
     private final NotificacionRepository notificacionRepository;
     private final AppProperties props;
+    private final WhatsappMetaClient whatsappMeta;
     private final RestClient twilio;
 
-    public CanalesSender(JavaMailSender mailSender, NotificacionRepository notificacionRepository, AppProperties props) {
+    public CanalesSender(JavaMailSender mailSender, NotificacionRepository notificacionRepository,
+                         AppProperties props, WhatsappMetaClient whatsappMeta) {
         this.mailSender = mailSender;
         this.notificacionRepository = notificacionRepository;
         this.props = props;
+        this.whatsappMeta = whatsappMeta;
         this.twilio = RestClient.builder()
                 .baseUrl("https://api.twilio.com/2010-04-01")
                 .defaultHeaders(h -> h.setBasicAuth(props.twilio().accountSid(), props.twilio().authToken()))
@@ -74,7 +77,7 @@ public class CanalesSender {
         enviarTwilio(CanalNotificacion.SMS, destino, props.twilio().smsFrom(), asunto, texto, usuarioId, citaId);
     }
 
-    /** WhatsApp con la API de Twilio (sandbox o número aprobado). */
+    /** WhatsApp: usa la Cloud API de Meta si está configurada; si no, Twilio (sandbox). */
     @Async
     public void enviarWhatsapp(String telefono, String asunto, String texto, Long usuarioId, Long citaId) {
         String destino = Telefonos.whatsapp(telefono);
@@ -83,11 +86,22 @@ public class CanalesSender {
                     "Canal deshabilitado o teléfono inválido", usuarioId, citaId);
             return;
         }
+        if (whatsappMeta.configurado()) {
+            String numero = Telefonos.e164(telefono);
+            try {
+                whatsappMeta.enviar(numero, texto);
+                registrar(CanalNotificacion.WHATSAPP, numero, asunto, "ENVIADA", null, usuarioId, citaId);
+            } catch (Exception e) {
+                log.warn("No se pudo enviar WhatsApp (Meta) a {}: {}", numero, e.getMessage());
+                registrar(CanalNotificacion.WHATSAPP, numero, asunto, "FALLIDA", e.getMessage(), usuarioId, citaId);
+            }
+            return;
+        }
         enviarTwilio(CanalNotificacion.WHATSAPP, destino, props.twilio().whatsappFrom(), asunto, texto, usuarioId, citaId);
     }
 
     private void enviarTwilio(CanalNotificacion canal, String to, String from, String asunto, String texto,
-                            Long usuarioId, Long citaId) {
+                              Long usuarioId, Long citaId) {
         try {
             MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
             form.add("To", to);
