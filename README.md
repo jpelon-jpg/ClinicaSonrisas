@@ -388,7 +388,7 @@ Guía paso a paso en [`deploy/DESPLIEGUE.md`](deploy/DESPLIEGUE.md): servicio sy
 
 ## GitHub Projects
 
-El avance del proyecto se lleva en un tablero público con las columnas **Backlog, To Do, In Progress, In Review y Done**: <PEGAR AQUÍ LA URL DEL TABLERO>.
+El avance del proyecto se lleva en un tablero público con las columnas **Backlog, To Do, In Progress, In Review y Done**: https://github.com/users/jpelon-jpg/projects/3.
 
 ## Distribución del trabajo
 
@@ -396,5 +396,5 @@ El historial de commits refleja el trabajo de ambos integrantes.
 
 | Integrante | Áreas principales |
 | --- | --- |
-| **Angel Sixto Morales** | <AJUSTAR: p. ej. diseño en Figma, frontend React, API REST, seguridad con JWT, entidades, módulos de negocio, seed y pruebas> |
-| **<TU NOMBRE COMPLETO>** | <AJUSTAR: p. ej. dominio y DNS, despliegue en el VPS (Nginx, systemd, HTTPS con Certbot, MySQL), Postfix + OpenDKIM con SPF/DKIM/DMARC, integración de SMS (Twilio) y WhatsApp (Cloud API de Meta), pruebas de integración, documentación> |
+| **Angel Sixto Morales** | Diseño en Figma, frontend React, API REST, seguridad con JWT, entidades, módulos de negocio, seed y pruebas |
+| **Jhonatan Ivan Poblete Hernandez** | Dominio y DNS, despliegue en el VPS (Nginx, systemd, HTTPS con Certbot, MySQL), Postfix + OpenDKIM con SPF/DKIM/DMARC, integración de SMS (Twilio) y WhatsApp (Cloud API de Meta), pruebas de integración, documentación |
