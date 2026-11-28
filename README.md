@@ -8,7 +8,7 @@ Cada confirmación, cancelación o recordatorio se notifica al paciente por **co
 | ------------------------ | ------------------------------------------------------------------------------------- |
 | 🌐 **Aplicación (HTTPS)** | [https://clinicasonrisas.online](https://clinicasonrisas.online)                      |
 | 🔌 **URL base de la API** | `https://clinicasonrisas.online/api` (local: `http://localhost:8080/api`)             |
-| 🎨 **Prototipo en Figma** | https://www.figma.com/design/FqsYMfdiBLF9Q6yDEMyq3D/Sonrisas?node-id=0-1&t=CcSMHi8RminzIiap-1
+| 🎨 **Prototipo en Figma** | https://www.figma.com/design/l092qivLrA60IrFJkGJn79/Clinica-Sonrisas?node-id=0-1&t=bbGSUVH36mat4ACL-1 |
 | 📋 **GitHub Projects**    | https://github.com/users/jpelon-jpg/projects/3 |
 | 👥 **Equipo**             | Angel Sixto Morales · Jhonatan Ivan  Poblete Hernandez — Instituto Tecnológico de Oaxaca, 7SD, equipo 13 |
 
