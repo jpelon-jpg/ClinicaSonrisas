@@ -5,9 +5,14 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/dentista/pacientes?page=0&size=5
+  url: https://clinicasonrisas.online/api/dentista/pacientes?page=0&size=5
   body: none
   auth: bearer
+}
+
+params:query {
+  page: 0
+  size: 5
 }
 
 auth:bearer {

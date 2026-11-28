@@ -5,13 +5,17 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/paciente/citas
+  url: https://clinicasonrisas.online/api/paciente/citas
   body: json
   auth: bearer
 }
 
 auth:bearer {
   token: {{tokenPaciente}}
+}
+
+body:json {
+  {}
 }
 
 script:pre-request {
@@ -25,10 +29,6 @@ script:pre-request {
 
 script:post-response {
   if (res.status === 201) bru.setVar("solicitudId", res.body.id);
-}
-
-body:json {
-  {}
 }
 
 tests {

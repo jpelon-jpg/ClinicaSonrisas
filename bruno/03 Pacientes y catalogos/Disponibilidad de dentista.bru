@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/dentistas/1/disponibilidad?fecha={{fecha}}
+  url: https://clinicasonrisas.online/api/dentistas/1/disponibilidad?fecha={{fecha}}
   body: none
   auth: bearer
+}
+
+params:query {
+  fecha: {{fecha}}
 }
 
 auth:bearer {
