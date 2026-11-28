@@ -1,7 +1,5 @@
 # 🦷 Sonrisa · Sistema de gestión para clínica dental
 
-[![CI](https://github.com/jpelon-jpg/ClinicaSonrisas/actions/workflows/ci.yml/badge.svg)](https://github.com/jpelon-jpg/ClinicaSonrisas/actions/workflows/ci.yml)
-
 Sistema web full stack para una clínica dental. La **recepción** agenda citas y confirma las que los pacientes solicitan en línea. El **dentista** lleva su agenda y el expediente clínico (odontograma y notas de evolución). El **paciente** agenda y consulta sus citas desde un portal. El **administrador** gestiona usuarios, roles y catálogos.
 
 Cada confirmación, cancelación o recordatorio se notifica al paciente por **correo** (Postfix propio + JavaMailSender), **SMS** (Twilio) y **WhatsApp** (WhatsApp Cloud API de Meta).
@@ -10,9 +8,9 @@ Cada confirmación, cancelación o recordatorio se notifica al paciente por **co
 | ------------------------ | ------------------------------------------------------------------------------------- |
 | 🌐 **Aplicación (HTTPS)** | [https://clinicasonrisas.online](https://clinicasonrisas.online)                      |
 | 🔌 **URL base de la API** | `https://clinicasonrisas.online/api` (local: `http://localhost:8080/api`)             |
-| 🎨 **Prototipo en Figma** | <PEGAR AQUÍ EL ENLACE figma.com/proto/...>                                            |
-| 📋 **GitHub Projects**    | <PEGAR AQUÍ LA URL DEL TABLERO, p. ej. https://github.com/users/jpelon-jpg/projects/N> |
-| 👥 **Equipo**             | Angel Sixto Morales · <TU NOMBRE COMPLETO> — Instituto Tecnológico de Oaxaca, 7SD, equipo <N> |
+| 🎨 **Prototipo en Figma** | https://www.figma.com/design/l092qivLrA60IrFJkGJn79/Clinica-Sonrisas?node-id=0-1&t=bbGSUVH36mat4ACL-1 |
+| 📋 **GitHub Projects**    | https://github.com/users/jpelon-jpg/projects/3 |
+| 👥 **Equipo**             | Angel Sixto Morales · Jhonatan Ivan  Poblete Hernandez — Instituto Tecnológico de Oaxaca, 7SD, equipo 13 |
 
 ---
 
@@ -390,7 +388,7 @@ Guía paso a paso en [`deploy/DESPLIEGUE.md`](deploy/DESPLIEGUE.md): servicio sy
 
 ## GitHub Projects
 
-El avance del proyecto se lleva en un tablero público con las columnas **Backlog, To Do, In Progress, In Review y Done**: <PEGAR AQUÍ LA URL DEL TABLERO>.
+El avance del proyecto se lleva en un tablero público con las columnas **Backlog, To Do, In Progress, In Review y Done**: https://github.com/users/jpelon-jpg/projects/3.
 
 ## Distribución del trabajo
 
@@ -398,5 +396,5 @@ El historial de commits refleja el trabajo de ambos integrantes.
 
 | Integrante | Áreas principales |
 | --- | --- |
-| **Angel Sixto Morales** | <AJUSTAR: p. ej. diseño en Figma, frontend React, API REST, seguridad con JWT, entidades, módulos de negocio, seed y pruebas> |
-| **<TU NOMBRE COMPLETO>** | <AJUSTAR: p. ej. dominio y DNS, despliegue en el VPS (Nginx, systemd, HTTPS con Certbot, MySQL), Postfix + OpenDKIM con SPF/DKIM/DMARC, integración de SMS (Twilio) y WhatsApp (Cloud API de Meta), pruebas de integración, documentación> |
+| **Angel Sixto Morales** | Diseño en Figma, frontend React, API REST, seguridad con JWT, entidades, módulos de negocio, seed y pruebas |
+| **Jhonatan Ivan Poblete Hernandez** | Dominio y DNS, despliegue en el VPS (Nginx, systemd, HTTPS con Certbot, MySQL), Postfix + OpenDKIM con SPF/DKIM/DMARC, integración de SMS (Twilio) y WhatsApp (Cloud API de Meta), pruebas de integración, documentación |
