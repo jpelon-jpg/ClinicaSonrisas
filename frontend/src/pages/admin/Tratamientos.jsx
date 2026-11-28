@@ -6,6 +6,9 @@ import { useForm } from '../../hooks/useForm'
 import { v } from '../../utils/validators'
 import { dinero } from '../../utils/format'
 import Tabla from '../../components/Tabla'
+import Icono from '../../components/Icono'
+import { Encabezado } from '../../components/Estados'
+import { Buscar, Seleccion } from '../../components/Filtros'
 import Modal from '../../components/Modal'
 import Field from '../../components/Field'
 import ConfirmModal from '../../components/ConfirmModal'
@@ -20,30 +23,32 @@ export default function Tratamientos() {
   const { datos, cargando, error, recargar } = useApi(() => api.get('/tratamientos', { q, activo, page, size: 10 }), [q, activo, page])
 
   const columnas = [
-    { titulo: 'Tratamiento', render: (t) => <><strong>{t.nombre}</strong><small className="block muted">{t.descripcion}</small></> },
-    { titulo: 'Duración', render: (t) => `${t.duracionMin} min` },
-    { titulo: 'Precio', render: (t) => dinero(t.precio) },
-    { titulo: 'Estado', render: (t) => <span className={`badge badge-${t.activo ? 'ok' : 'muted'}`}>{t.activo ? 'Activo' : 'Inactivo'}</span> },
-    { titulo: 'Acciones', className: 'acciones', render: (t) => (
-      <div className="btn-grupo">
-        <button className="btn btn-ghost sm" onClick={() => setModal({ tipo: 'form', t })}>Editar</button>
-        <button className="btn btn-ghost sm texto-peligro" onClick={() => setModal({ tipo: 'eliminar', t })}>Eliminar</button>
+    { titulo: 'Tratamiento', render: (t) => <div className="celda-persona"><span className="tile sm tile-menta"><Icono nombre="diente" size={18} /></span>
+      <div><strong>{t.nombre}</strong><small>{t.descripcion}</small></div></div> },
+    { titulo: 'Duración', render: (t) => <span className="acceso"><Icono nombre="reloj" size={16} /> {t.duracionMin} min</span> },
+    { titulo: 'Precio', render: (t) => <strong>{dinero(t.precio)}</strong> },
+    { titulo: 'Estado', render: (t) => <span className={`badge badge-${t.activo ? 'ok' : 'muted'}`}><i />{t.activo ? 'Activo' : 'Inactivo'}</span> },
+    { titulo: 'Acciones', className: 'acciones-td', render: (t) => (
+      <div className="acciones">
+        <button className="accion" title="Editar" aria-label="Editar" onClick={() => setModal({ tipo: 'form', t })}><Icono nombre="lapiz" size={18} /></button>
+        <button className="accion borrar" title="Eliminar" aria-label="Eliminar" onClick={() => setModal({ tipo: 'eliminar', t })}><Icono nombre="basura" size={18} /></button>
       </div>) },
   ]
 
   return (
     <div className="pagina">
-      <header className="pagina-head">
-        <div><h1>Tratamientos</h1><p className="muted">Catálogo de servicios y precios</p></div>
-        <button className="btn btn-primary" onClick={() => setModal({ tipo: 'form' })}>＋ Nuevo tratamiento</button>
-      </header>
-      <section className="filtros card">
-        <input className="input crece" placeholder="Buscar tratamiento…" value={busqueda} onChange={(e) => { setBusqueda(e.target.value); setPage(0) }} aria-label="Buscar" />
-        <select className="input" value={activo} onChange={(e) => { setActivo(e.target.value); setPage(0) }} aria-label="Estado">
-          <option value="">Todos</option><option value="true">Activos</option><option value="false">Inactivos</option>
-        </select>
+      <Encabezado titulo="Tratamientos" subtitulo="Catálogo de servicios, duración y precios de la clínica.">
+        <button className="btn btn-primary lg" onClick={() => setModal({ tipo: 'form' })}><Icono nombre="mas" /> Nuevo tratamiento</button>
+      </Encabezado>
+      <section className="tabla-card">
+        <div className="filtros">
+          <Buscar placeholder="Buscar tratamiento" value={busqueda} onChange={(e) => { setBusqueda(e.target.value); setPage(0) }} />
+          <Seleccion icono="check" etiqueta="Estado" value={activo} onChange={(e) => { setActivo(e.target.value); setPage(0) }}>
+            <option value="">Todos los estados</option><option value="true">Activos</option><option value="false">Inactivos</option>
+          </Seleccion>
+        </div>
+        <Tabla columnas={columnas} pagina={datos} cargando={cargando} error={error} onRetry={recargar} onPagina={setPage} nombre="tratamientos" />
       </section>
-      <Tabla columnas={columnas} pagina={datos} cargando={cargando} error={error} onRetry={recargar} onPagina={setPage} />
       {modal?.tipo === 'form' && <TratamientoModal t={modal.t} onClose={() => setModal(null)} onGuardado={() => { setModal(null); recargar() }} />}
       {modal?.tipo === 'eliminar' && <ConfirmModal titulo="Eliminar tratamiento" textoConfirmar="Eliminar"
         mensaje={`¿Eliminar "${modal.t.nombre}"? Si ya se usó en alguna cita no se podrá borrar; en ese caso desactívalo.`}
@@ -71,8 +76,8 @@ function TratamientoModal({ t, onClose, onGuardado }) {
     } catch (e) { setErrorGeneral(e.message); throw e }
   })
   return (
-    <Modal titulo={t ? 'Editar tratamiento' : 'Nuevo tratamiento'} onClose={onClose}
-      footer={<><button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
+    <Modal titulo={t ? 'Editar tratamiento' : 'Nuevo tratamiento'} subtitulo="Servicio que los pacientes pueden agendar." icono="diente" onClose={onClose}
+      footer={<><button className="btn btn-outline" onClick={onClose}>Cancelar</button>
         <button className="btn btn-primary" onClick={(e) => submit(e).catch(() => {})} disabled={f.enviando}>{f.enviando && <span className="spinner sm" />} Guardar</button></>}>
       <form onSubmit={(e) => submit(e).catch(() => {})} noValidate>
         {errorGeneral && <div className="alerta alerta-error">{errorGeneral}</div>}

@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
+import Icono from '../../components/Icono'
 
 /** Aviso de privacidad (requerido por Facebook Login y por la LFPDPPP). Página pública. */
 export default function Privacidad() {
   return (
     <div className="legal">
       <header className="legal-head">
-        <Link to="/login" className="marca"><img src="/logo.svg" alt="" width="32" height="32" /> <span>Sonrisa</span></Link>
+        <Link to="/login" className="marca"><span className="marca-logo"><Icono nombre="diente" size={24} stroke={2} /></span><span className="marca-texto"><strong>Sonrisa</strong><small>Clínica dental</small></span></Link>
       </header>
       <main className="legal-cuerpo card">
         <h1>Aviso de privacidad</h1>

@@ -7,8 +7,9 @@ import { useApi } from '../../hooks/useApi'
 import { useForm } from '../../hooks/useForm'
 import { v } from '../../utils/validators'
 import { fecha, fechaHora } from '../../utils/format'
-import { Avatar, Badge, Cargando, ErrorEstado, Vacio, Spinner } from '../../components/Estados'
+import { Avatar, Badge, Cargando, Encabezado, ErrorEstado, Vacio, Spinner } from '../../components/Estados'
 import Odontograma, { COLORES_PIEZA } from '../../components/Odontograma'
+import Icono from '../../components/Icono'
 import Modal from '../../components/Modal'
 import Field from '../../components/Field'
 
@@ -29,66 +30,78 @@ export default function Expediente({ propio = false }) {
   if (cargando && !datos) return <div className="pagina"><Cargando texto="Abriendo expediente…" /></div>
   const p = datos.paciente
 
+  const volver = tieneRol('DENTISTA') ? ['/dentista', 'Mi agenda'] : ['/recepcion/pacientes', 'Pacientes']
+  const notaDeCita = params.get('cita')
+
   return (
     <div className="pagina">
-      <header className="pagina-head">
-        <div className="celda-persona">
-          <Avatar nombre={p.nombreCompleto} url={p.avatarUrl} size={56} />
-          <div><h1>{propio ? 'Mi expediente' : p.nombreCompleto}</h1>
-            <p className="muted">{p.edad != null ? `${p.edad} años · ` : ''}{p.telefono || p.email}</p></div>
+      {!propio && <p className="migas"><Link to={volver[0]}>{volver[1]}</Link> / <strong>Expediente de {p.nombreCompleto}</strong></p>}
+      {propio && <Encabezado titulo="Mi historial" subtitulo="Tu odontograma, tus tratamientos y tus últimas citas. Solo tu dentista puede modificarlo." />}
+
+      <section className="card exp-cab">
+        <Avatar nombre={p.nombreCompleto} url={p.avatarUrl} size={64} />
+        <div className="crece">
+          <h1>{p.nombreCompleto}</h1>
+          <p className="muted">Expediente #{p.id}{p.edad != null ? ` · ${p.edad} años` : ''}{p.telefono ? ` · ${p.telefono}` : ''}</p>
         </div>
-        {!propio && <Link to={tieneRol('DENTISTA') ? '/dentista/pacientes' : '/recepcion/pacientes'} className="btn btn-ghost">‹ Volver</Link>}
-      </header>
+        {p.alergias && <span className="badge badge-danger" style={{ fontSize: 13, padding: '.4rem .8rem' }}><Icono nombre="alerta" size={15} /> Alergia: {p.alergias}</span>}
+        {notaDeCita && !propio && <span className="badge badge-ok" style={{ fontSize: 13, padding: '.4rem .8rem' }}><Icono nombre="actividad" size={15} /> Consulta de hoy</span>}
+        {puedeEditar && <button className="btn btn-primary lg" onClick={() => setModal('nota')}><Icono nombre="mas" size={18} /> Nueva nota de evolución</button>}
+      </section>
 
       <div className="grid-exp">
-        <section className="card">
-          <div className="card-head"><h2>Antecedentes</h2>{puedeEditar && <button className="btn btn-ghost sm" onClick={() => setModal('antecedentes')}>Editar</button>}</div>
-          <dl className="datos">
-            <dt>Alergias</dt><dd>{p.alergias ? <span className="chip chip-alerta">{p.alergias}</span> : 'Ninguna conocida'}</dd>
-            <dt>Antecedentes</dt><dd>{p.antecedentes || 'Sin registrar'}</dd>
-            <dt>Emergencia</dt><dd>{p.contactoEmergencia || '—'}</dd>
-            <dt>Nacimiento</dt><dd>{p.fechaNacimiento ? fecha(p.fechaNacimiento + 'T12:00:00') : '—'}</dd>
-          </dl>
-        </section>
+        <div>
+          <section className="card" style={{ marginBottom: '1.5rem' }}>
+            <div className="card-head"><div><h2>Odontograma</h2><p>{puedeEditar ? 'Toca una pieza para registrar su estado' : 'Toca una pieza para ver su historial'} · numeración FDI</p></div></div>
+            <Odontograma registros={datos.odontograma} seleccionada={pieza} onSeleccionar={setPieza} />
+            {pieza && <DetallePieza pacienteId={p.id} pieza={pieza} propio={propio} actual={datos.odontograma.find((r) => r.pieza === pieza)}
+              puedeEditar={puedeEditar} onRegistrado={recargar} onCerrar={() => setPieza(null)} />}
+          </section>
 
-        <section className="card odonto-card">
-          <div className="card-head"><h2>Odontograma</h2><span className="muted sm">Toca una pieza para ver su historial</span></div>
-          <Odontograma registros={datos.odontograma} seleccionada={pieza} onSeleccionar={setPieza} />
-          {pieza && <DetallePieza pacienteId={p.id} pieza={pieza} propio={propio} actual={datos.odontograma.find((r) => r.pieza === pieza)}
-            puedeEditar={puedeEditar} onRegistrado={recargar} onCerrar={() => setPieza(null)} />}
-        </section>
+          <section className="card">
+            <div className="card-head"><div><h2>Historial de tratamientos</h2><p>Notas de evolución (NOM-004): no se editan ni se borran</p></div></div>
+            {datos.notas.length === 0 ? <Vacio texto="Sin notas registradas" /> : (
+              <ol className="notas tl-notas">
+                {datos.notas.map((n) => (
+                  <li key={n.id}>
+                    <div className="fila-entre"><strong>{n.tratamientoRealizado}</strong><small>{fechaHora(n.creadoEn)}</small></div>
+                    <small className="block">{n.dentista} · {n.diagnostico}</small>
+                    {(n.pronostico || n.indicaciones) && <small className="block" style={{ marginTop: 2 }}>
+                      {n.pronostico ? `Pronóstico ${n.pronostico.toLowerCase()}. ` : ''}{n.indicaciones || ''}</small>}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+        </div>
 
-        <section className="card ancho-total">
-          <div className="card-head"><h2>Notas de evolución</h2>{puedeEditar && <button className="btn btn-primary sm" onClick={() => setModal('nota')}>＋ Nueva nota</button>}</div>
-          {datos.notas.length === 0 ? <Vacio texto="Sin notas registradas" /> : (
-            <ol className="notas">
-              {datos.notas.map((n) => (
-                <li key={n.id} className="nota">
-                  <header><strong>{fechaHora(n.creadoEn)}</strong><span className="muted">{n.dentista}</span></header>
-                  <dl className="datos">
-                    <dt>Motivo</dt><dd>{n.motivoConsulta}</dd>
-                    <dt>Diagnóstico</dt><dd>{n.diagnostico}</dd>
-                    <dt>Tratamiento</dt><dd>{n.tratamientoRealizado}</dd>
-                    {n.pronostico && <><dt>Pronóstico</dt><dd>{n.pronostico}</dd></>}
-                    {n.indicaciones && <><dt>Indicaciones</dt><dd>{n.indicaciones}</dd></>}
-                  </dl>
-                </li>
-              ))}
-            </ol>
-          )}
-        </section>
+        <div>
+          <section className="card" style={{ marginBottom: '1.5rem' }}>
+            <div className="card-head"><div><h2>Antecedentes</h2><p>Información médica relevante</p></div>
+              {puedeEditar && <button className="btn btn-outline sm" onClick={() => setModal('antecedentes')}><Icono nombre="lapiz" size={16} /> Editar</button>}</div>
+            <div className="dato-ico"><span className="tile sm tile-rojo"><Icono nombre="alerta" size={18} /></span>
+              <div><small>Alergias</small><strong style={p.alergias ? { color: 'var(--danger)' } : undefined}>{p.alergias || 'Ninguna conocida'}</strong></div></div>
+            <div className="dato-ico"><span className="tile sm tile-menta"><Icono nombre="archivo" size={18} /></span>
+              <div><small>Antecedentes</small><strong>{p.antecedentes || 'Sin registrar'}</strong></div></div>
+            <div className="dato-ico"><span className="tile sm tile-azul"><Icono nombre="telefono" size={18} /></span>
+              <div><small>Contacto de emergencia</small><strong>{p.contactoEmergencia || '—'}</strong></div></div>
+            <div className="dato-ico" style={{ marginBottom: 0 }}><span className="tile sm tile-gris"><Icono nombre="calendario" size={18} /></span>
+              <div><small>Fecha de nacimiento</small><strong>{p.fechaNacimiento ? fecha(p.fechaNacimiento + 'T12:00:00') : '—'}</strong></div></div>
+          </section>
 
-        <section className="card ancho-total">
-          <h2>Últimas citas</h2>
-          {datos.citas.length === 0 ? <Vacio texto="Sin citas" /> : (
-            <ul className="lista">
-              {datos.citas.map((c) => (
-                <li key={c.id} className="lista-item"><div className="crece"><strong>{fechaHora(c.fechaHora)}</strong>
-                  <small className="block muted">{c.tratamientos.map((t) => t.nombre).join(', ')} · {c.dentista.nombreCompleto}</small></div><Badge estado={c.estado} /></li>
-              ))}
-            </ul>
-          )}
-        </section>
+          <section className="card">
+            <div className="card-head"><div><h2>Últimas citas</h2></div></div>
+            {datos.citas.length === 0 ? <Vacio texto="Sin citas" /> : (
+              <ul className="lista">
+                {datos.citas.map((c) => (
+                  <li key={c.id} className="lista-item"><Icono nombre="diente" size={20} style={{ color: 'var(--main)' }} />
+                    <div className="crece"><strong>{c.tratamientos.map((t) => t.nombre).join(', ')}</strong>
+                      <small className="block muted">{fechaHora(c.fechaHora)} · {c.dentista.nombreCompleto}</small></div><Badge estado={c.estado} /></li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
       </div>
 
       {modal === 'antecedentes' && <AntecedentesModal p={p} onClose={() => setModal(null)} onGuardado={() => { setModal(null); recargar() }} />}
@@ -148,10 +161,10 @@ function AntecedentesModal({ p, onClose, onGuardado }) {
     try { await api.put(`/expedientes/${p.id}/antecedentes`, d); toast.ok('Antecedentes actualizados'); onGuardado() } catch (e) { toast.error(e.message); throw e }
   })
   return (
-    <Modal titulo="Antecedentes y alergias" onClose={onClose}
-      footer={<><button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
+    <Modal titulo="Antecedentes y alergias" subtitulo="Se muestran en la cabecera del expediente." icono="alerta" tono="rojo" onClose={onClose}
+      footer={<><button className="btn btn-outline" onClick={onClose}>Cancelar</button>
         <button className="btn btn-primary" onClick={(e) => submit(e).catch(() => {})} disabled={f.enviando}>Guardar</button></>}>
-      <Field label="Alergias" {...f.campo('alergias')} />
+      <Field label="Alergias" icono="alerta" {...f.campo('alergias')} />
       <Field as="textarea" rows={4} label="Antecedentes médicos" {...f.campo('antecedentes')} />
     </Modal>
   )
@@ -172,15 +185,15 @@ function NotaModal({ pacienteId, citas, citaInicial, onClose, onGuardado }) {
     } catch (e) { toast.error(e.message); throw e }
   })
   return (
-    <Modal titulo="Nueva nota de evolución" onClose={onClose} ancho={620}
-      footer={<><button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
-        <button className="btn btn-primary" onClick={(e) => submit(e).catch(() => {})} disabled={f.enviando}>{f.enviando && <Spinner sm />} Guardar nota</button></>}>
+    <Modal titulo="Nota de evolución" subtitulo="Solo el dentista puede escribir en el expediente clínico." icono="archivo" onClose={onClose} ancho={640}
+      footer={<><button className="btn btn-outline" onClick={onClose}>Cancelar</button>
+        <button className="btn btn-primary" onClick={(e) => submit(e).catch(() => {})} disabled={f.enviando}>{f.enviando ? <Spinner sm /> : <Icono nombre="check" size={18} />} Guardar nota</button></>}>
       <p className="muted sm">Las notas no se pueden editar ni eliminar después de guardarlas.</p>
-      <Field as="select" label="Cita relacionada (opcional)" {...f.campo('citaId')}>
+      <Field as="select" label="Cita relacionada (opcional)" icono="calendario" {...f.campo('citaId')}>
         <option value="">Sin cita</option>
         {citas.filter((c) => c.estado === 'ATENDIDA' || c.estado === 'CONFIRMADA').map((c) => <option key={c.id} value={c.id}>{fechaHora(c.fechaHora)} · {c.tratamientos.map((t) => t.nombre).join(', ')}</option>)}
       </Field>
-      <Field label="Motivo de consulta" {...f.campo('motivoConsulta')} />
+      <Field label="Motivo de consulta" icono="archivo" {...f.campo('motivoConsulta')} />
       <Field as="textarea" rows={2} label="Diagnóstico" {...f.campo('diagnostico')} />
       <Field as="textarea" rows={2} label="Tratamiento realizado" {...f.campo('tratamientoRealizado')} />
       <div className="grid-2">

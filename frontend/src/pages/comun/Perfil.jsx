@@ -6,7 +6,7 @@ import { useForm } from '../../hooks/useForm'
 import { v } from '../../utils/validators'
 import Field from '../../components/Field'
 import PasswordChecklist from '../../components/PasswordChecklist'
-import { Avatar } from '../../components/Estados'
+import { Avatar, Encabezado } from '../../components/Estados'
 
 export default function Perfil() {
   const { usuario, setUsuario } = useAuth()
@@ -46,7 +46,7 @@ export default function Perfil() {
 
   return (
     <div className="pagina">
-      <header className="pagina-head"><div><h1>Mi perfil</h1><p className="muted">Tus datos de contacto y seguridad</p></div></header>
+      <Encabezado titulo="Mi perfil" subtitulo="Tus datos de contacto y la seguridad de tu cuenta." />
       <div className="grid-2 alto">
         <section className="card">
           <div className="perfil-top">
@@ -57,11 +57,11 @@ export default function Perfil() {
           </div>
           <form onSubmit={guardarDatos} noValidate>
             <div className="grid-2">
-              <Field label="Nombre" {...datos.campo('nombre')} />
+              <Field label="Nombre" icono="usuario" {...datos.campo('nombre')} />
               <Field label="Apellidos" {...datos.campo('apellidos')} />
             </div>
-            <Field label="Teléfono" type="tel" {...datos.campo('telefono')} hint="Lo usamos para enviarte SMS y WhatsApp de tus citas" />
-            <Field label="URL de tu foto (opcional)" {...datos.campo('avatarUrl')} />
+            <Field label="Teléfono" icono="telefono" type="tel" {...datos.campo('telefono')} hint="Lo usamos para enviarte SMS y WhatsApp de tus citas" />
+            <Field label="URL de tu foto (opcional)" icono="archivo" {...datos.campo('avatarUrl')} />
             <button className="btn btn-primary" disabled={datos.enviando}>{datos.enviando && <span className="spinner sm" />} Guardar cambios</button>
           </form>
         </section>
@@ -73,10 +73,10 @@ export default function Perfil() {
           ) : (
             <form onSubmit={cambiarPwd} noValidate>
               {errPwd && <div className="alerta alerta-error">{errPwd}</div>}
-              <Field label="Contraseña actual" type="password" autoComplete="current-password" {...pwd.campo('passwordActual')} />
-              <Field label="Nueva contraseña" type="password" autoComplete="new-password" {...pwd.campo('passwordNueva')} />
+              <Field label="Contraseña actual" icono="candado" type="password" autoComplete="current-password" {...pwd.campo('passwordActual')} />
+              <Field label="Nueva contraseña" icono="candado" type="password" autoComplete="new-password" {...pwd.campo('passwordNueva')} />
               <PasswordChecklist value={pwd.valores.passwordNueva} />
-              <Field label="Confirmar nueva contraseña" type="password" autoComplete="new-password" {...pwd.campo('confirmar')} />
+              <Field label="Confirmar nueva contraseña" icono="candado" type="password" autoComplete="new-password" {...pwd.campo('confirmar')} />
               <button className="btn btn-primary" disabled={pwd.enviando}>{pwd.enviando && <span className="spinner sm" />} Actualizar contraseña</button>
             </form>
           )}

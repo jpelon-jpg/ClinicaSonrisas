@@ -5,6 +5,7 @@ import { useForm } from '../../hooks/useForm'
 import { v } from '../../utils/validators'
 import Modal from '../../components/Modal'
 import Field from '../../components/Field'
+import Icono from '../../components/Icono'
 import PasswordChecklist from '../../components/PasswordChecklist'
 
 const ROLES = [
@@ -54,20 +55,20 @@ export default function UsuarioFormModal({ usuario, dentista, onClose, onGuardad
   })
 
   return (
-    <Modal titulo={editando ? 'Editar usuario' : 'Nuevo usuario'} onClose={onClose} ancho={640}
+    <Modal titulo={editando ? 'Editar usuario' : 'Nuevo usuario'} subtitulo="Datos de acceso, rol y, si es dentista, su información profesional." icono="usuarioMas" onClose={onClose} ancho={680}
       footer={<>
-        <button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
-        <button className="btn btn-primary" onClick={(e) => submit(e).catch(() => {})} disabled={f.enviando}>{f.enviando && <span className="spinner sm" />} Guardar</button>
+        <button className="btn btn-outline" onClick={onClose}>Cancelar</button>
+        <button className="btn btn-primary" onClick={(e) => submit(e).catch(() => {})} disabled={f.enviando}>{f.enviando ? <span className="spinner sm" /> : <Icono nombre="check" size={18} />} Guardar</button>
       </>}>
       <form onSubmit={(e) => submit(e).catch(() => {})} noValidate>
         {errorGeneral && <div className="alerta alerta-error">{errorGeneral}</div>}
         <div className="grid-2">
-          <Field label="Nombre" {...f.campo('nombre')} />
+          <Field label="Nombre" icono="usuario" {...f.campo('nombre')} />
           <Field label="Apellidos" {...f.campo('apellidos')} />
-          <Field label="Correo (usuario de acceso)" type="email" {...f.campo('email')} />
-          <Field label="Teléfono" type="tel" {...f.campo('telefono')} />
+          <Field label="Correo (usuario de acceso)" icono="correo" type="email" {...f.campo('email')} />
+          <Field label="Teléfono" icono="telefono" type="tel" {...f.campo('telefono')} />
         </div>
-        <Field label={editando ? 'Nueva contraseña (déjala vacía para no cambiarla)' : 'Contraseña'} type="password" autoComplete="new-password" {...f.campo('password')} />
+        <Field label={editando ? 'Nueva contraseña (déjala vacía para no cambiarla)' : 'Contraseña'} type="password" icono="candado" autoComplete="new-password" {...f.campo('password')} />
         {(f.valores.password || !editando) && <PasswordChecklist value={f.valores.password} />}
         <div className={`field ${f.errores.roles ? 'field-error' : ''}`}>
           <span className="label">Roles</span>

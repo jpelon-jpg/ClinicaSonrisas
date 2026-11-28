@@ -29,9 +29,9 @@ export default function Restablecer() {
       {hecho ? <div className="alerta alerta-ok">{hecho}</div> : token && (
         <form onSubmit={submit} noValidate>
           {error && <div className="alerta alerta-error">{error}</div>}
-          <Field label="Contraseña nueva" type="password" autoComplete="new-password" {...f.campo('password')} />
+          <Field label="Contraseña nueva" icono="candado" type="password" autoComplete="new-password" {...f.campo('password')} />
           <PasswordChecklist value={f.valores.password} />
-          <Field label="Confirmar contraseña" type="password" autoComplete="new-password" {...f.campo('confirmar')} />
+          <Field label="Confirmar contraseña" icono="candado" type="password" autoComplete="new-password" {...f.campo('confirmar')} />
           <button className="btn btn-primary btn-block" disabled={f.enviando}>{f.enviando && <span className="spinner sm" />} Guardar contraseña</button>
         </form>
       )}

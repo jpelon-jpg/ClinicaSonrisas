@@ -19,11 +19,11 @@ export default function OlvidePassword() {
   return (
     <AuthShell>
       <h2>Recuperar contraseña</h2>
-      <p className="muted">Te enviaremos un enlace a tu correo para crear una contraseña nueva. El enlace vence en 30 minutos.</p>
+      <p className="auth-sub">Te enviaremos un enlace a tu correo para crear una contraseña nueva. El enlace vence en 30 minutos.</p>
       {mensaje ? <div className="alerta alerta-ok">{mensaje}</div> : (
         <form onSubmit={submit} noValidate>
           {error && <div className="alerta alerta-error">{error}</div>}
-          <Field label="Correo electrónico" type="email" {...f.campo('email')} />
+          <Field label="Correo electrónico" icono="correo" type="email" {...f.campo('email')} />
           <button className="btn btn-primary btn-block" disabled={f.enviando}>{f.enviando && <span className="spinner sm" />} Enviar enlace</button>
         </form>
       )}

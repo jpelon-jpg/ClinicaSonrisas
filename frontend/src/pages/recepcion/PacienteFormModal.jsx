@@ -6,6 +6,7 @@ import { v } from '../../utils/validators'
 import { hoyISO } from '../../utils/format'
 import Modal from '../../components/Modal'
 import Field from '../../components/Field'
+import Icono from '../../components/Icono'
 
 /** Overlay "Registrar paciente". Si se marca "crear acceso", el backend genera una contraseña temporal y la envía por correo. */
 export default function PacienteFormModal({ paciente, onClose, onGuardado }) {
@@ -44,7 +45,7 @@ export default function PacienteFormModal({ paciente, onClose, onGuardado }) {
     return (
       <Modal titulo="Paciente registrado" onClose={() => onGuardado(creado.paciente)} ancho={460}
         footer={<button className="btn btn-primary" onClick={() => onGuardado(creado.paciente)}>Listo</button>}>
-        <div className="alerta alerta-ok">Enviamos sus datos de acceso a <strong>{creado.paciente.email}</strong>.</div>
+        <div className="alerta alerta-ok"><Icono nombre="correo" size={18} /><span>Enviamos sus datos de acceso a <strong>{creado.paciente.email}</strong>.</span></div>
         <p>Si el paciente está en mostrador, también puedes dictarle su contraseña temporal:</p>
         <p className="credencial">{creado.passwordTemporal}</p>
         <p className="muted sm">El sistema le pedirá cambiarla en su primer inicio de sesión.</p>
@@ -53,27 +54,28 @@ export default function PacienteFormModal({ paciente, onClose, onGuardado }) {
   }
 
   return (
-    <Modal titulo={paciente ? 'Editar paciente' : 'Registrar paciente'} onClose={onClose} ancho={640}
+    <Modal titulo={paciente ? 'Editar paciente' : 'Registrar paciente'} subtitulo="Para pacientes que llegan directamente a la clínica." icono="usuarioMas" onClose={onClose} ancho={640}
       footer={<>
-        <button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
-        <button className="btn btn-primary" onClick={(e) => submit(e).catch(() => {})} disabled={f.enviando}>{f.enviando && <span className="spinner sm" />} Guardar</button>
+        <button className="btn btn-outline" onClick={onClose}>Cancelar</button>
+        <button className="btn btn-primary" onClick={(e) => submit(e).catch(() => {})} disabled={f.enviando}>{f.enviando ? <span className="spinner sm" /> : <Icono nombre="check" size={18} />} {paciente ? 'Guardar cambios' : 'Registrar paciente'}</button>
       </>}>
       <form onSubmit={(e) => submit(e).catch(() => {})} noValidate>
         {errorGeneral && <div className="alerta alerta-error">{errorGeneral}</div>}
         <div className="grid-2">
-          <Field label="Nombre" {...f.campo('nombre')} />
+          <Field label="Nombre(s)" icono="usuario" {...f.campo('nombre')} />
           <Field label="Apellidos" {...f.campo('apellidos')} />
-          <Field label="Correo electrónico" type="email" {...f.campo('email')} />
-          <Field label="Teléfono celular" type="tel" inputMode="numeric" maxLength={15} {...f.campo('telefono')} />
-          <Field label="Fecha de nacimiento" type="date" max={hoyISO()} {...f.campo('fechaNacimiento')} />
-          <Field label="Contacto de emergencia" placeholder="Nombre · teléfono" {...f.campo('contactoEmergencia')} />
+          <Field label="Correo electrónico" icono="correo" type="email" {...f.campo('email')} />
+          <Field label="Teléfono celular" icono="telefono" type="tel" inputMode="numeric" maxLength={15} {...f.campo('telefono')} />
+          <Field label="Fecha de nacimiento" icono="calendario" type="date" max={hoyISO()} {...f.campo('fechaNacimiento')} />
+          <Field label="Contacto de emergencia" icono="telefono" placeholder="Nombre · teléfono" {...f.campo('contactoEmergencia')} />
         </div>
-        <Field label="Alergias" placeholder="Ej. penicilina, látex" {...f.campo('alergias')} />
+        <Field label="Alergias o condiciones médicas" icono="alerta" placeholder="Ej. penicilina, látex" {...f.campo('alergias')} />
         <Field as="textarea" rows={2} label="Antecedentes médicos" {...f.campo('antecedentes')} />
         {!paciente && (
-          <label className="check-linea">
+          <label className="check-linea caja-menta" style={{ alignItems: 'flex-start' }}>
             <input type="checkbox" checked={f.valores.crearAcceso} onChange={(e) => f.cambiar('crearAcceso', e.target.checked)} />
-            Crear acceso al portal (se envía una contraseña temporal a su correo)
+            <span><strong className="block">Crear acceso al portal del paciente</strong>
+              <small className="muted">Podrá entrar con su correo y una contraseña temporal que le enviaremos. Se le pedirá cambiarla al iniciar sesión por primera vez.</small></span>
           </label>
         )}
       </form>

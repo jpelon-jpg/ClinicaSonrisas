@@ -6,6 +6,7 @@ import { v } from '../../utils/validators'
 import Field from '../../components/Field'
 import SocialButtons from '../../components/SocialButtons'
 import AuthShell from './AuthShell'
+import Icono from '../../components/Icono'
 
 export default function Login() {
   const { usuario, login, loginGoogle, loginFacebook } = useAuth()
@@ -32,37 +33,47 @@ export default function Login() {
     try { entrar(await login(email.trim(), password)) } catch (e) { fallo(e) }
   })
 
+  const lema = tab === 'paciente' ? ['Tu sonrisa,', 'a un clic de distancia.'] : ['Cuidamos tu sonrisa,', 'organizamos tu atención.']
+
   return (
-    <AuthShell>
-      <h2>Iniciar sesión</h2>
+    <AuthShell lema={lema}>
+      <h2>Bienvenido</h2>
+      <p className="auth-sub">Elige cómo quieres ingresar.</p>
       <div className="tabs" role="tablist">
-        <button role="tab" aria-selected={tab === 'paciente'} className={tab === 'paciente' ? 'activo' : ''} onClick={() => setTab('paciente')}>Soy paciente</button>
-        <button role="tab" aria-selected={tab === 'personal'} className={tab === 'personal' ? 'activo' : ''} onClick={() => setTab('personal')}>Personal de la clínica</button>
+        <button role="tab" aria-selected={tab === 'personal'} className={tab === 'personal' ? 'activo' : ''} onClick={() => setTab('personal')}>
+          <Icono nombre="portapapeles" size={18} /> Personal de la clínica</button>
+        <button role="tab" aria-selected={tab === 'paciente'} className={tab === 'paciente' ? 'activo' : ''} onClick={() => setTab('paciente')}>
+          <Icono nombre="usuario" size={18} /> Soy paciente</button>
       </div>
 
-      {errorGeneral && <div className="alerta alerta-error" role="alert">{errorGeneral}</div>}
+      {errorGeneral && <div className="alerta alerta-error" role="alert"><Icono nombre="alerta" size={18} />{errorGeneral}</div>}
 
       <form onSubmit={submit} noValidate>
-        <Field label="Correo electrónico" type="email" autoComplete="email" placeholder="nombre@correo.com" {...f.campo('email')} />
-        <div className="field-pwd">
-          <Field label="Contraseña" type={verPwd ? 'text' : 'password'} autoComplete="current-password" {...f.campo('password')} />
-          <button type="button" className="ver-pwd" onClick={() => setVerPwd((x) => !x)}>{verPwd ? 'Ocultar' : 'Mostrar'}</button>
-        </div>
-        <div className="fila-entre">
-          <span className="muted sm">{tab === 'paciente' ? 'Usa el correo y la contraseña que te dio recepción' : 'Acceso para administración, recepción y dentistas'}</span>
+        <Field label="Correo electrónico" type="email" autoComplete="email" placeholder="nombre@correo.com" icono="correo" {...f.campo('email')} />
+        <Field label="Contraseña" type={verPwd ? 'text' : 'password'} autoComplete="current-password" icono="candado" {...f.campo('password')}
+          extra={<button type="button" className="ver-pwd" onClick={() => setVerPwd((x) => !x)} aria-label={verPwd ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+            <Icono nombre={verPwd ? 'ocultar' : 'ojo'} size={18} /></button>} />
+        <div className="fila-entre" style={{ justifyContent: 'flex-end', margin: '-.25rem 0 1.25rem' }}>
           <Link to="/olvide-password" className="link sm">¿Olvidaste tu contraseña?</Link>
         </div>
         <button className="btn btn-primary btn-block" disabled={f.enviando}>
-          {f.enviando && <span className="spinner sm" />} Entrar
+          {f.enviando && <span className="spinner sm" />} Iniciar sesión
         </button>
       </form>
 
-      {tab === 'paciente' && (
+      {tab === 'paciente' ? (
         <>
           <div className="separador"><span>o continúa con</span></div>
           <SocialButtons onGoogle={onGoogle} onFacebook={onFacebook} />
-          <p className="centro muted">¿Primera vez? <Link to="/registro" className="link">Crea tu cuenta</Link></p>
-          <p className="centro muted sm">Al continuar aceptas nuestro <Link to="/privacidad" className="link">aviso de privacidad</Link>.</p>
+          <div className="alerta alerta-menta"><Icono nombre="info" size={18} />
+            <span>¿Te registraste en la clínica? Usa el correo y la contraseña que te dio recepción. ¿Primera vez? <Link to="/registro" className="link">Crea tu cuenta</Link>.</span></div>
+          <p className="auth-pie">Al continuar aceptas nuestro <Link to="/privacidad" className="link">aviso de privacidad</Link>.</p>
+        </>
+      ) : (
+        <>
+          <div className="alerta alerta-menta" style={{ marginTop: '1.5rem' }}><Icono nombre="escudo" size={18} />
+            <span><strong>Administradores, recepcionistas y dentistas.</strong>Tu rol y permisos se asignan según tu cuenta.</span></div>
+          <p className="auth-pie">Sistema de gestión de citas · Sonrisa</p>
         </>
       )}
     </AuthShell>
