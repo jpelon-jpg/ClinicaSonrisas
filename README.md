@@ -1,7 +1,5 @@
 # 🦷 Sonrisa · Sistema de gestión para clínica dental
 
-[![CI](https://github.com/jpelon-jpg/ClinicaSonrisas/actions/workflows/ci.yml/badge.svg)](https://github.com/jpelon-jpg/ClinicaSonrisas/actions/workflows/ci.yml)
-
 Sistema web full stack para una clínica dental. La **recepción** agenda citas y confirma las que los pacientes solicitan en línea. El **dentista** lleva su agenda y el expediente clínico (odontograma y notas de evolución). El **paciente** agenda y consulta sus citas desde un portal. El **administrador** gestiona usuarios, roles y catálogos.
 
 Cada confirmación, cancelación o recordatorio se notifica al paciente por **correo** (Postfix propio + JavaMailSender), **SMS** (Twilio) y **WhatsApp** (WhatsApp Cloud API de Meta).
