@@ -1,3 +1,5 @@
+import Icono from './Icono'
+
 /**
  * Odontograma con numeración FDI (adulto: 18–11 | 21–28 / 48–41 | 31–38).
  * registros = estado actual por pieza  ·  onSeleccionar(pieza) abre el detalle.
@@ -24,8 +26,9 @@ export default function Odontograma({ registros = [], seleccionada, onSelecciona
     const c = COLORES_PIEZA[r?.estado || 'SANA']
     return (
       <button key={n} type="button" className={`pieza ${seleccionada === n ? 'sel' : ''} ${r?.estado === 'AUSENTE' ? 'ausente' : ''}`}
-        style={{ background: c.fondo, borderColor: c.borde }} onClick={() => onSeleccionar?.(n)}
+        style={r ? { background: c.fondo, borderColor: c.borde } : undefined} onClick={() => onSeleccionar?.(n)}
         title={`Pieza ${n}: ${c.texto}`} aria-label={`Pieza ${n}, ${c.texto}`}>
+        <Icono nombre="diente" size={18} stroke={1.6} style={{ color: r ? c.borde : '#94A3B8' }} />
         <span>{n}</span>
       </button>
     )
@@ -36,7 +39,7 @@ export default function Odontograma({ registros = [], seleccionada, onSelecciona
       <div className="arcada">{INF.map(pieza)}</div>
       <ul className="leyenda">
         {Object.entries(COLORES_PIEZA).map(([k, c]) => (
-          <li key={k}><span style={{ background: c.fondo, borderColor: c.borde }} />{c.texto}</li>
+          <li key={k}><span style={{ background: c.borde }} />{c.texto}</li>
         ))}
       </ul>
     </div>

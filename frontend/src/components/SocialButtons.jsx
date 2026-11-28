@@ -26,7 +26,7 @@ export default function SocialButtons({ onGoogle, onFacebook, deshabilitado }) {
       .then(() => {
         window.google.accounts.id.initialize({ client_id: GOOGLE_ID, callback: (r) => onGoogle(r.credential) })
         window.google.accounts.id.renderButton(googleRef.current, {
-          theme: 'outline', size: 'large', text: 'continue_with', shape: 'rectangular', width: 320, locale: 'es',
+          theme: 'outline', size: 'large', text: 'continue_with', shape: 'rectangular', width: 220, locale: 'es',
         })
       })
       .catch(() => setErrorCarga('No se pudo cargar el inicio de sesión de Google'))
@@ -54,12 +54,12 @@ export default function SocialButtons({ onGoogle, onFacebook, deshabilitado }) {
       {GOOGLE_ID
         ? <div ref={googleRef} className="google-btn" aria-label="Continuar con Google" />
         : <button type="button" className="btn btn-social" disabled title="Configura VITE_GOOGLE_CLIENT_ID">
-            <GoogleIcon /> Continuar con Google</button>}
+            <GoogleIcon /> Google</button>}
       <button type="button" className="btn btn-social btn-fb" onClick={facebook} disabled={!fbListo || deshabilitado}
         title={FB_ID ? undefined : 'Configura VITE_FACEBOOK_APP_ID'}>
-        <FacebookIcon /> Continuar con Facebook
+        <FacebookIcon /> Facebook
       </button>
-      {errorCarga && <p className="field-msg">{errorCarga}</p>}
+      {errorCarga && <p className="field-msg" style={{ gridColumn: '1 / -1' }}>{errorCarga}</p>}
     </div>
   )
 }

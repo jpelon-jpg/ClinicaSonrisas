@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Modal from './Modal'
 import Field from './Field'
+import Icono from './Icono'
 
 /**
  * Confirmación para acciones destructivas (sin diálogos nativos del navegador).
@@ -18,9 +19,9 @@ export default function ConfirmModal({ titulo, mensaje, textoConfirmar = 'Confir
   }
 
   return (
-    <Modal titulo={titulo} onClose={onClose} ancho={440}
+    <Modal titulo={titulo} icono={peligro ? 'alerta' : 'check'} tono={peligro ? 'rojo' : 'menta'} onClose={onClose} ancho={480}
       footer={<>
-        <button className="btn btn-ghost" onClick={onClose} disabled={enviando}>Volver</button>
+        <button className="btn btn-outline" onClick={onClose} disabled={enviando}>Volver</button>
         <button className={`btn ${peligro ? 'btn-danger' : 'btn-primary'}`} onClick={confirmar} disabled={enviando}>
           {enviando ? <span className="spinner sm" /> : null} {textoConfirmar}
         </button>
